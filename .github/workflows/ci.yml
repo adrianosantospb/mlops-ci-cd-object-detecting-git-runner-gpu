@@ -1,0 +1,40 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-test:
+    name: Build and Test on GPU Runner
+    runs-on: 
+      - self-hosted
+      - gpu
+      - pytorch
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          pytest tests/
+
+      - name: Verify GPU availability
+        run: |
+          echo "Checking GPU devices:"
+          nvidia-smi
