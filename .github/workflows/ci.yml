@@ -8,14 +8,16 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: [self-hosted, gpu, pytorch]   # <- CORRETO
+    runs-on: [self-hosted, gpu, pytorch]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Fix PATH for Conda Python
-        run: echo "/opt/conda/bin" >> $GITHUB_PATH
+      - name: Fix PATH for Conda and User Bin
+        run: |
+          echo "/opt/conda/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Verify Python version
         run: python --version
