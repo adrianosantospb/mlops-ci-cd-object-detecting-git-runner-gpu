@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: [self-hosted, gpu, pytorch]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Fix PATH for Conda and User Bin
+        run: |
+          echo "/opt/conda/bin" >> $GITHUB_PATH
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Verify Python version
+        run: python --version
+
+      - name: Upgrade pip and install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run tests
+        run: |
+          echo "Running tests..."
+          pytest -s tests/
+
+      - name: Verify GPU availability
+        run: |
+          echo "Checking GPU devices..."
+          nvidia-smi
+          python -c "import torch; print('Torch CUDA available:', torch.cuda.is_available())"
