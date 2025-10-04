@@ -25,7 +25,6 @@ It is designed for **CI/CD workflows** in machine learning projects that require
 └── tests
     └── test_pytorch_gpu.py    # GPU availability test with PyTorch
 ```
-
 ---
 
 ## ⚙️ Configuration
