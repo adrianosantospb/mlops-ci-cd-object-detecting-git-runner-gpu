@@ -1,0 +1,27 @@
+networks:
+  adrianosantosnet:
+    external: true
+
+services:
+  
+  github-runner:
+    image: pytorch/pytorch:2.4.0-cuda12.4-cudnn9-devel
+    container_name: github-runner
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    env_file:
+      - .env
+    volumes:
+      - ./data/runner:/runner
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./start_runner.sh:/start_runner.sh
+    working_dir: /runner
+    entrypoint: ["/bin/bash", "/start_runner.sh"]
+    restart: unless-stopped
+    networks:
+      - adrianosantosnet
