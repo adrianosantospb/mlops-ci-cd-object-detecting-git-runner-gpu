@@ -1,35 +1,41 @@
-name: CI Workflow
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [ "main" ]
 
 jobs:
   build-and-test:
-    name: Build and Test on GPU Runner
-    runs-on: 
-      - self-hosted
-      - gpu
-      - pytorch
+    runs-on: self-hosted
+    # Labels precisam bater com o seu runner
+    # Ex: "gpu" e "pytorch" conforme você configurou
+    labels: [self-hosted, gpu, pytorch]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install dependencies
+      - name: Fix PATH for Conda Python
+        run: echo "/opt/conda/bin" >> $GITHUB_PATH
+
+      - name: Verify Python version
+        run: python --version
+
+      - name: Upgrade pip and install dependencies
         run: |
-          python3 -m pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pytest
 
       - name: Run tests
         run: |
           echo "Running tests..."
-          pytest -s .
+          pytest -s tests/
 
       - name: Verify GPU availability
         run: |
-          echo "Checking GPU devices:"
+          echo "Checking GPU devices..."
           nvidia-smi
+          python -c "import torch; print('Torch CUDA available:', torch.cuda.is_available())"
