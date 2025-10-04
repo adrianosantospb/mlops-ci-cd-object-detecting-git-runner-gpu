@@ -4,6 +4,7 @@ pandas
 seaborn
 matplotlib
 hydra-core
+pytest
 black
 pylint
 commitizen
