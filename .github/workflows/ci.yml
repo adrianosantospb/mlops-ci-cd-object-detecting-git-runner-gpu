@@ -32,7 +32,7 @@ jobs:
       - name: Run tests
         run: |
           echo "Running tests..."
-          pytest tests/
+          pytest -s .
 
       - name: Verify GPU availability
         run: |
