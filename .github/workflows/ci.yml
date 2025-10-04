@@ -8,10 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: self-hosted
-    # Labels precisam bater com o seu runner
-    # Ex: "gpu" e "pytorch" conforme você configurou
-    labels: [self-hosted, gpu, pytorch]
+    runs-on: [self-hosted, gpu, pytorch]   # <- CORRETO
 
     steps:
       - name: Checkout repository
